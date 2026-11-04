@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Hybrid Deepfake Detection — Visual Results Report</title>
+<style>
+:root {
+  --ink:#1c2430; --muted:#5c6775; --bg:#f4f1ea; --card:#fffcf7;
+  --line:#d5d0c6; --accent:#0f6e6a; --real:#1f7a4d; --fake:#b42318;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  color: var(--ink);
+  background: var(--bg);
+  line-height: 1.5;
+}
+header {
+  background: linear-gradient(135deg, #0f6e6a, #1c2430);
+  color: #f7fffe;
+  padding: 2.2rem 1.5rem 2rem;
+}
+header h1 { margin: 0 0 0.4rem; font-size: 1.8rem; }
+header p { margin: 0.25rem 0; opacity: 0.92; max-width: 52rem; }
+main { width: min(1100px, calc(100% - 2rem)); margin: 0 auto; padding: 1.5rem 0 3rem; }
+section {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 1.25rem 1.4rem 1.5rem;
+  margin: 1.1rem 0;
+  box-shadow: 0 10px 28px rgba(28,36,48,0.06);
+}
+h2 { margin: 0 0 0.6rem; font-size: 1.25rem; color: var(--accent-ink, #073e3c); }
+h3 { margin: 1.1rem 0 0.5rem; font-size: 1.05rem; }
+.muted { color: var(--muted); }
+table { border-collapse: collapse; width: 100%; font-size: 0.92rem; margin: 0.6rem 0 0.2rem; }
+th, td { border: 1px solid var(--line); padding: 0.4rem 0.55rem; text-align: left; }
+th { background: #efebe3; }
+td.num { text-align: right; font-variant-numeric: tabular-nums; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-top: 0.75rem; }
+.grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.85rem; margin-top: 0.75rem; }
+figure { margin: 0; background: #fff; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+figure img { width: 100%; display: block; background: #fff; }
+figcaption { padding: 0.55rem 0.7rem; font-size: 0.82rem; color: var(--muted); border-top: 1px solid var(--line); }
+.hero-img { max-width: 420px; border-radius: 12px; border: 1px solid var(--line); display: block; }
+.badge { display: inline-block; padding: 0.2rem 0.55rem; border-radius: 999px; background: #e4f3f1; color: #0f6e6a; font-size: 0.78rem; font-weight: 600; }
+ul.tight li { margin: 0.2rem 0; }
+.note { background: #efebe3; padding: 0.85rem 1rem; border-radius: 10px; color: var(--muted); font-size: 0.92rem; }
+a { color: var(--accent); }
+footer { text-align: center; color: var(--muted); font-size: 0.85rem; padding: 1rem; }
+@media print {
+  header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  section { break-inside: avoid; box-shadow: none; }
+}
+</style>
+</head>
+<body>
+<header>
+  <p class="badge">Phase 2 · Visual results pack</p>
+  <h1>Hybrid Deepfake Video Detection</h1>
+  <p>EfficientNet-B0 (spatial) + FFT frequency CNN + Bi-LSTM · four ablations · FF++ c23 / c40-style / SDFVD · FrameForge web prototype</p>
+  <p>Hardware for reported run: RTX 3050 Laptop 4 GB · PyTorch 2.5.1+cu118</p>
+</header>
+
+<main>
+
+<section>
+  <h2>1. Project snapshot</h2>
+  <p class="muted">End-to-end mini-project: prepare faces → train four models → evaluate three test sets → Grad-CAM → browser upload demo.</p>
+  <ul class="tight">
+    <li><strong>Train subset:</strong> 20 real + 20 fake FF++ videos → 148 / 30 / 30 sequences (train/val/test)</li>
+    <li><strong>Cross-dataset test:</strong> SDFVD 106 videos (53 real, 53 fake)</li>
+    <li><strong>Compression test:</strong> c40-style simulated (libx264 CRF 40) on FF++ test frames</li>
+    <li><strong>Best in-domain video AUC:</strong> spatial-only <strong>0.8000</strong> on FF++ c23</li>
+    <li><strong>Web demo fine-tune:</strong> spatial → SDFVD, held-out val AUC ≈ <strong>0.9801</strong></li>
+  </ul>
+</section>
+
+<section>
+  <h2>2. Sample input frame (FF++ mirror inspect)</h2>
+  <p class="muted">Saved during data prep. Auto face mode was <code>full_frame</code> (640×480), so MTCNN crops were used.</p>
+  <img class="hero-img" src="figures/data/sample_frame.jpg" alt="Sample FF++ frame"/>
+</section>
+
+<section>
+  <h2>3. Model capacity</h2>
+  <img src="figures/summary/param_counts.png" alt="Parameter counts" style="max-width:640px;width:100%;border:1px solid var(--line);border-radius:12px"/>
+  <p class="muted">spatial 4.34M · spatial_freq 4.46M · spatial_temporal 7.29M · full 7.64M trainable parameters.</p>
+</section>
+
+<section>
+  <h2>4. Headline metrics — video-level AUC</h2>
+  <img src="figures/summary/video_auc_bars.png" alt="Video AUC bar chart" style="width:100%;border:1px solid var(--line);border-radius:12px"/>
+  <table>
+    <tr><th>Variant</th><th>FF++ c23</th><th>c40-style</th><th>SDFVD</th></tr>
+    <tr><td>spatial-only (baseline)</td><td class="num"><strong>0.8000</strong></td><td class="num">0.4000</td><td class="num">0.5041</td></tr>
+    <tr><td>spatial+frequency</td><td class="num">0.6000</td><td class="num">0.2000</td><td class="num">0.5039</td></tr>
+    <tr><td>spatial+temporal</td><td class="num">0.4000</td><td class="num">0.0000</td><td class="num">0.4745</td></tr>
+    <tr><td>full hybrid</td><td class="num">0.4000</td><td class="num">0.2000</td><td class="num">0.4950</td></tr>
+  </table>
+  <p class="note">Dashed line at 0.5 = random ranking. Cross-dataset SDFVD stays near chance for the Phase-2 FF++-only models. FF++/c40 test sets are tiny (6 videos: 5 real, 1 fake), so precision/recall at threshold 0.5 are unstable.</p>
+</section>
+
+<section>
+  <h2>5. Full video-level results table</h2>
+  <table>
+    <tr><th>Variant</th><th>Test set</th><th>n</th><th>AUC</th><th>Acc</th><th>Prec</th><th>Rec</th><th>F1</th></tr>
+    <tr><td>spatial-only</td><td>FF++ c23</td><td class="num">6</td><td class="num">0.8000</td><td class="num">0.6667</td><td class="num">0.0000</td><td class="num">0.0000</td><td class="num">0.0000</td></tr>
+    <tr><td>spatial-only</td><td>c40-style</td><td class="num">6</td><td class="num">0.4000</td><td class="num">0.5000</td><td class="num">0.0000</td><td class="num">0.0000</td><td class="num">0.0000</td></tr>
+    <tr><td>spatial-only</td><td>SDFVD</td><td class="num">106</td><td class="num">0.5041</td><td class="num">0.5000</td><td class="num">0.5000</td><td class="num">0.9245</td><td class="num">0.6490</td></tr>
+    <tr><td>spatial+frequency</td><td>FF++ c23</td><td class="num">6</td><td class="num">0.6000</td><td class="num">0.6667</td><td class="num">0.0000</td><td class="num">0.0000</td><td class="num">0.0000</td></tr>
+    <tr><td>spatial+frequency</td><td>c40-style</td><td class="num">6</td><td class="num">0.2000</td><td class="num">0.5000</td><td class="num">0.0000</td><td class="num">0.0000</td><td class="num">0.0000</td></tr>
+    <tr><td>spatial+frequency</td><td>SDFVD</td><td class="num">106</td><td class="num">0.5039</td><td class="num">0.5094</td><td class="num">0.5059</td><td class="num">0.8113</td><td class="num">0.6232</td></tr>
+    <tr><td>spatial+temporal</td><td>FF++ c23</td><td class="num">6</td><td class="num">0.4000</td><td class="num">0.3333</td><td class="num">0.0000</td><td class="num">0.0000</td><td class="num">0.0000</td></tr>
+    <tr><td>spatial+temporal</td><td>c40-style</td><td class="num">6</td><td class="num">0.0000</td><td class="num">0.3333</td><td class="num">0.0000</td><td class="num">0.0000</td><td class="num">0.0000</td></tr>
+    <tr><td>spatial+temporal</td><td>SDFVD</td><td class="num">106</td><td class="num">0.4745</td><td class="num">0.4906</td><td class="num">0.4945</td><td class="num">0.8491</td><td class="num">0.6250</td></tr>
+    <tr><td>full hybrid</td><td>FF++ c23</td><td class="num">6</td><td class="num">0.4000</td><td class="num">0.5000</td><td class="num">0.0000</td><td class="num">0.0000</td><td class="num">0.0000</td></tr>
+    <tr><td>full hybrid</td><td>c40-style</td><td class="num">6</td><td class="num">0.2000</td><td class="num">0.5000</td><td class="num">0.0000</td><td class="num">0.0000</td><td class="num">0.0000</td></tr>
+    <tr><td>full hybrid</td><td>SDFVD</td><td class="num">106</td><td class="num">0.4950</td><td class="num">0.4717</td><td class="num">0.4842</td><td class="num">0.8679</td><td class="num">0.6216</td></tr>
+  </table>
+</section>
+
+<section>
+  <h2>6. ROC curves (video level)</h2>
+  <p class="muted">One plot per variant × test set. Source: <code>results/roc/*_video.png</code></p>
+
+  <h3>Spatial-only baseline</h3>
+  <div class="grid">
+    <figure><img src="figures/roc/spatial__ffpp_c23_video.png" alt=""/><figcaption>FF++ c23 · video AUC 0.80</figcaption></figure>
+    <figure><img src="figures/roc/spatial__c40_style_video.png" alt=""/><figcaption>c40-style · video AUC 0.40</figcaption></figure>
+    <figure><img src="figures/roc/spatial__sdfvd_video.png" alt=""/><figcaption>SDFVD · video AUC 0.50</figcaption></figure>
+  </div>
+
+  <h3>Spatial + frequency</h3>
+  <div class="grid">
+    <figure><img src="figures/roc/spatial_freq__ffpp_c23_video.png" alt=""/><figcaption>FF++ c23</figcaption></figure>
+    <figure><img src="figures/roc/spatial_freq__c40_style_video.png" alt=""/><figcaption>c40-style</figcaption></figure>
+    <figure><img src="figures/roc/spatial_freq__sdfvd_video.png" alt=""/><figcaption>SDFVD</figcaption></figure>
+  </div>
+
+  <h3>Spatial + temporal (Bi-LSTM)</h3>
+  <div class="grid">
+    <figure><img src="figures/roc/spatial_temporal__ffpp_c23_video.png" alt=""/><figcaption>FF++ c23</figcaption></figure>
+    <figure><img src="figures/roc/spatial_temporal__c40_style_video.png" alt=""/><figcaption>c40-style</figcaption></figure>
+    <figure><img src="figures/roc/spatial_temporal__sdfvd_video.png" alt=""/><figcaption>SDFVD</figcaption></figure>
+  </div>
+
+  <h3>Full hybrid</h3>
+  <div class="grid">
+    <figure><img src="figures/roc/full__ffpp_c23_video.png" alt=""/><figcaption>FF++ c23</figcaption></figure>
+    <figure><img src="figures/roc/full__c40_style_video.png" alt=""/><figcaption>c40-style</figcaption></figure>
+    <figure><img src="figures/roc/full__sdfvd_video.png" alt=""/><figcaption>SDFVD</figcaption></figure>
+  </div>
+</section>
+
+<section>
+  <h2>7. Confusion matrices (video level)</h2>
+  <p class="muted">Threshold = 0.5 · majority vote over sequences · positive class = fake</p>
+
+  <h3>Spatial-only baseline</h3>
+  <div class="grid">
+    <figure><img src="figures/confusion/spatial__ffpp_c23_video.png" alt=""/><figcaption>FF++ c23</figcaption></figure>
+    <figure><img src="figures/confusion/spatial__c40_style_video.png" alt=""/><figcaption>c40-style</figcaption></figure>
+    <figure><img src="figures/confusion/spatial__sdfvd_video.png" alt=""/><figcaption>SDFVD</figcaption></figure>
+  </div>
+
+  <h3>Spatial + frequency</h3>
+  <div class="grid">
+    <figure><img src="figures/confusion/spatial_freq__ffpp_c23_video.png" alt=""/><figcaption>FF++ c23</figcaption></figure>
+    <figure><img src="figures/confusion/spatial_freq__c40_style_video.png" alt=""/><figcaption>c40-style</figcaption></figure>
+    <figure><img src="figures/confusion/spatial_freq__sdfvd_video.png" alt=""/><figcaption>SDFVD</figcaption></figure>
+  </div>
+
+  <h3>Spatial + temporal</h3>
+  <div class="grid">
+    <figure><img src="figures/confusion/spatial_temporal__ffpp_c23_video.png" alt=""/><figcaption>FF++ c23</figcaption></figure>
+    <figure><img src="figures/confusion/spatial_temporal__c40_style_video.png" alt=""/><figcaption>c40-style</figcaption></figure>
+    <figure><img src="figures/confusion/spatial_temporal__sdfvd_video.png" alt=""/><figcaption>SDFVD</figcaption></figure>
+  </div>
+
+  <h3>Full hybrid</h3>
+  <div class="grid">
+    <figure><img src="figures/confusion/full__ffpp_c23_video.png" alt=""/><figcaption>FF++ c23</figcaption></figure>
+    <figure><img src="figures/confusion/full__c40_style_video.png" alt=""/><figcaption>c40-style</figcaption></figure>
+    <figure><img src="figures/confusion/full__sdfvd_video.png" alt=""/><figcaption>SDFVD</figcaption></figure>
+  </div>
+</section>
+
+<section>
+  <h2>8. Grad-CAM explainability (full hybrid, EfficientNet conv_head)</h2>
+  <p class="muted">Heatmaps show where the spatial branch looked when scoring P(fake). Mix of FF++ c23 test and SDFVD frames.</p>
+  <div class="grid-3">
+    <figure><img src="figures/gradcam/ffpp_c23_real_original_004_f000005.png" alt=""/><figcaption>FF++ real · original/004</figcaption></figure>
+    <figure><img src="figures/gradcam/ffpp_c23_real_original_901_f000005.png" alt=""/><figcaption>FF++ real · original/901</figcaption></figure>
+    <figure><img src="figures/gradcam/ffpp_c23_fake_Face2Face_843_859_f000005.png" alt=""/><figcaption>FF++ fake · Face2Face/843_859</figcaption></figure>
+    <figure><img src="figures/gradcam/sdfvd_real_v1.mp4_f000025.png" alt=""/><figcaption>SDFVD real · v1</figcaption></figure>
+    <figure><img src="figures/gradcam/sdfvd_real_v10.mp4_f000025.png" alt=""/><figcaption>SDFVD real · v10</figcaption></figure>
+    <figure><img src="figures/gradcam/sdfvd_fake_vs1.mp4_f000025.png" alt=""/><figcaption>SDFVD fake · vs1</figcaption></figure>
+    <figure><img src="figures/gradcam/sdfvd_fake_vs10.mp4_f000025.png" alt=""/><figcaption>SDFVD fake · vs10</figcaption></figure>
+    <figure><img src="figures/gradcam/sdfvd_fake_vs11.mp4_f000025.png" alt=""/><figcaption>SDFVD fake · vs11</figcaption></figure>
+  </div>
+</section>
+
+<section>
+  <h2>9. Training notes from the run</h2>
+  <ul class="tight">
+    <li>All four variants early-stopped at epoch 5; best checkpoint usually epoch 2 (by val sequence AUC).</li>
+    <li>Val sequence AUC peaks: spatial 0.822 · spatial_freq 0.933 · spatial_temporal 0.893 · full 0.862</li>
+    <li>Micro-batch 4, effective batch 8, FP16, gradient checkpointing on EfficientNet (4 GB GPU).</li>
+    <li>Prototype demo weights: fine-tuned spatial on SDFVD → val AUC 0.9801 (<code>checkpoints/prototype/best.pt</code>).</li>
+  </ul>
+</section>
+
+<section>
+  <h2>10. How to present this</h2>
+  <ol>
+    <li>Open this HTML in a browser (Ctrl+P → Save as PDF if needed).</li>
+    <li>Show FrameForge live at <code>http://127.0.0.1:7860</code>.</li>
+    <li>Point to GitHub: <a href="https://github.com/ishita0705/hybrid-deepfake-detection">ishita0705/hybrid-deepfake-detection</a>.</li>
+    <li>Written narrative: <code>docs/PROJECT_REPORT.md</code> · viva prep: <code>docs/VIVA_QA.md</code>.</li>
+  </ol>
+  <p class="note">Sequence-level ROC/confusion plots also exist under <code>D:\deepfake_phase2\results\</code>; this pack focuses on video-level figures for the oral demo.</p>
+</section>
+
+</main>
+<footer>
+  Hybrid deepfake Phase 2 · visual report generated from the local run under D:\deepfake_phase2
+</footer>
+</body>
+</html>
