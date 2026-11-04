@@ -1,16 +1,19 @@
-# Visual results report
+# Visual results report (detailed)
 
-**Open the illustrated version:** [VISUAL_REPORT.html](VISUAL_REPORT.html) (double-click, or open in browser).
+Open the illustrated HTML (best for teachers / PDF export):
 
-That HTML embeds:
+**[VISUAL_REPORT.html](VISUAL_REPORT.html)**
 
-- Sample FF++ frame  
-- Parameter-count chart  
-- Video AUC bar chart + full metrics table  
-- All **video-level** ROC curves (4 variants × 3 tests)  
-- All **video-level** confusion matrices  
-- All Grad-CAM overlays  
+It now includes:
 
-Figures live under [`figures/`](figures/).
+1. How to read the project results  
+2. What each model variant is  
+3. Data + sample frame  
+4. Video AUC chart explained bar-by-bar  
+5. Full metrics table with a plain-English “Explain” column  
+6. **ROC from scratch**, then every video-level ROC image explained  
+7. **Confusion matrices from scratch**, then every matrix explained  
+8. **Grad-CAM from scratch** (what red/blue means, how it is computed), then **all 8 overlays explained one by one** with true label, P(fake), and interpretation  
+9. Final viva-style conclusions  
 
-Also see: [PROJECT_REPORT.md](PROJECT_REPORT.md) · [VIVA_QA.md](VIVA_QA.md) · [RESULTS_SNAPSHOT.md](RESULTS_SNAPSHOT.md)
+Figures: [`figures/`](figures/)

@@ -2,231 +2,570 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
-<title>Hybrid Deepfake Detection — Visual Results Report</title>
+<title>Hybrid Deepfake Detection — Detailed Visual Report</title>
 <style>
 :root {
   --ink:#1c2430; --muted:#5c6775; --bg:#f4f1ea; --card:#fffcf7;
   --line:#d5d0c6; --accent:#0f6e6a; --real:#1f7a4d; --fake:#b42318;
 }
 * { box-sizing: border-box; }
-body {
-  margin: 0;
-  font-family: "Segoe UI", system-ui, sans-serif;
-  color: var(--ink);
-  background: var(--bg);
-  line-height: 1.5;
-}
-header {
-  background: linear-gradient(135deg, #0f6e6a, #1c2430);
-  color: #f7fffe;
-  padding: 2.2rem 1.5rem 2rem;
-}
-header h1 { margin: 0 0 0.4rem; font-size: 1.8rem; }
-header p { margin: 0.25rem 0; opacity: 0.92; max-width: 52rem; }
-main { width: min(1100px, calc(100% - 2rem)); margin: 0 auto; padding: 1.5rem 0 3rem; }
-section {
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: 16px;
-  padding: 1.25rem 1.4rem 1.5rem;
-  margin: 1.1rem 0;
-  box-shadow: 0 10px 28px rgba(28,36,48,0.06);
-}
-h2 { margin: 0 0 0.6rem; font-size: 1.25rem; color: var(--accent-ink, #073e3c); }
-h3 { margin: 1.1rem 0 0.5rem; font-size: 1.05rem; }
-.muted { color: var(--muted); }
-table { border-collapse: collapse; width: 100%; font-size: 0.92rem; margin: 0.6rem 0 0.2rem; }
-th, td { border: 1px solid var(--line); padding: 0.4rem 0.55rem; text-align: left; }
-th { background: #efebe3; }
-td.num { text-align: right; font-variant-numeric: tabular-nums; }
-.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-top: 0.75rem; }
-.grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.85rem; margin-top: 0.75rem; }
-figure { margin: 0; background: #fff; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
-figure img { width: 100%; display: block; background: #fff; }
-figcaption { padding: 0.55rem 0.7rem; font-size: 0.82rem; color: var(--muted); border-top: 1px solid var(--line); }
-.hero-img { max-width: 420px; border-radius: 12px; border: 1px solid var(--line); display: block; }
-.badge { display: inline-block; padding: 0.2rem 0.55rem; border-radius: 999px; background: #e4f3f1; color: #0f6e6a; font-size: 0.78rem; font-weight: 600; }
-ul.tight li { margin: 0.2rem 0; }
-.note { background: #efebe3; padding: 0.85rem 1rem; border-radius: 10px; color: var(--muted); font-size: 0.92rem; }
-a { color: var(--accent); }
-footer { text-align: center; color: var(--muted); font-size: 0.85rem; padding: 1rem; }
+body { margin:0; font-family:"Segoe UI",system-ui,sans-serif; color:var(--ink); background:var(--bg); line-height:1.55; }
+header { background:linear-gradient(135deg,#0f6e6a,#1c2430); color:#f7fffe; padding:2.2rem 1.5rem 2rem; }
+header h1 { margin:0 0 .4rem; font-size:1.85rem; }
+header p { margin:.3rem 0; opacity:.93; max-width:56rem; }
+nav.toc { background:#fffcf7; border-bottom:1px solid var(--line); padding:.85rem 1.5rem; position:sticky; top:0; z-index:5; }
+nav.toc a { margin-right:1rem; color:var(--accent); text-decoration:none; font-size:.9rem; font-weight:600; }
+main { width:min(1080px, calc(100% - 2rem)); margin:0 auto; padding:1.4rem 0 3rem; }
+section { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:1.3rem 1.45rem 1.55rem; margin:1.15rem 0; box-shadow:0 10px 28px rgba(28,36,48,.06); }
+h2 { margin:0 0 .55rem; font-size:1.3rem; }
+h3 { margin:1.15rem 0 .45rem; font-size:1.08rem; }
+h4 { margin:.9rem 0 .35rem; font-size:1rem; }
+.muted { color:var(--muted); }
+.note { background:#efebe3; padding:.85rem 1rem; border-radius:10px; color:var(--muted); font-size:.92rem; margin-top:.75rem; }
+.callout { border-left:4px solid var(--accent); padding:.55rem .9rem; background:#eef7f6; margin:.7rem 0; }
+.callout.real { border-color:var(--real); background:#eef8f2; }
+.callout.fake { border-color:var(--fake); background:#fdf0ee; }
+table { border-collapse:collapse; width:100%; font-size:.9rem; margin:.55rem 0; }
+th, td { border:1px solid var(--line); padding:.4rem .55rem; }
+th { background:#efebe3; text-align:left; }
+td.num { text-align:right; font-variant-numeric:tabular-nums; }
+.grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1rem; margin-top:.7rem; }
+.card { background:#fff; border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+.card img { width:100%; display:block; }
+.card .body { padding:.75rem .85rem 1rem; font-size:.9rem; }
+.card .body strong { display:block; margin-bottom:.25rem; }
+.wide img { width:100%; max-width:720px; border:1px solid var(--line); border-radius:12px; display:block; }
+.hero { max-width:420px; border:1px solid var(--line); border-radius:12px; display:block; }
+.tag { display:inline-block; font-size:.72rem; font-weight:700; letter-spacing:.04em; padding:.15rem .5rem; border-radius:999px; }
+.tag.real { background:#dff5e8; color:var(--real); }
+.tag.fake { background:#fde8e6; color:var(--fake); }
+ol.explain > li { margin:.45rem 0; }
+footer { text-align:center; color:var(--muted); font-size:.85rem; padding:1rem 1rem 2rem; }
+code { background:#ebe6dc; padding:.05rem .3rem; border-radius:4px; font-size:.88em; }
 @media print {
-  header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  section { break-inside: avoid; box-shadow: none; }
+  nav.toc { position:static; }
+  section { break-inside:avoid; box-shadow:none; }
+  header { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
 }
 </style>
 </head>
 <body>
+
 <header>
-  <p class="badge">Phase 2 · Visual results pack</p>
+  <p style="opacity:.85;margin:0 0 .5rem;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;">Phase 2 · detailed visual report</p>
   <h1>Hybrid Deepfake Video Detection</h1>
-  <p>EfficientNet-B0 (spatial) + FFT frequency CNN + Bi-LSTM · four ablations · FF++ c23 / c40-style / SDFVD · FrameForge web prototype</p>
-  <p>Hardware for reported run: RTX 3050 Laptop 4 GB · PyTorch 2.5.1+cu118</p>
+  <p>This document explains <strong>every major result figure</strong> from the completed run: what the plot means, how to read it, and what it implies for the project. Grad-CAM is explained from scratch, then each heatmap is interpreted one by one.</p>
+  <p>Repo: <a href="https://github.com/ishita0705/hybrid-deepfake-detection" style="color:#c9fff8">ishita0705/hybrid-deepfake-detection</a> · Prototype UI: FrameForge on port 7860</p>
 </header>
+
+<nav class="toc">
+  <a href="#basics">Basics</a>
+  <a href="#data">Data</a>
+  <a href="#metrics">Metrics</a>
+  <a href="#roc">ROC</a>
+  <a href="#cm">Confusion</a>
+  <a href="#gradcam">Grad-CAM</a>
+  <a href="#takeaways">Takeaways</a>
+</nav>
 
 <main>
 
-<section>
-  <h2>1. Project snapshot</h2>
-  <p class="muted">End-to-end mini-project: prepare faces → train four models → evaluate three test sets → Grad-CAM → browser upload demo.</p>
-  <ul class="tight">
-    <li><strong>Train subset:</strong> 20 real + 20 fake FF++ videos → 148 / 30 / 30 sequences (train/val/test)</li>
-    <li><strong>Cross-dataset test:</strong> SDFVD 106 videos (53 real, 53 fake)</li>
-    <li><strong>Compression test:</strong> c40-style simulated (libx264 CRF 40) on FF++ test frames</li>
-    <li><strong>Best in-domain video AUC:</strong> spatial-only <strong>0.8000</strong> on FF++ c23</li>
-    <li><strong>Web demo fine-tune:</strong> spatial → SDFVD, held-out val AUC ≈ <strong>0.9801</strong></li>
-  </ul>
-</section>
-
-<section>
-  <h2>2. Sample input frame (FF++ mirror inspect)</h2>
-  <p class="muted">Saved during data prep. Auto face mode was <code>full_frame</code> (640×480), so MTCNN crops were used.</p>
-  <img class="hero-img" src="figures/data/sample_frame.jpg" alt="Sample FF++ frame"/>
-</section>
-
-<section>
-  <h2>3. Model capacity</h2>
-  <img src="figures/summary/param_counts.png" alt="Parameter counts" style="max-width:640px;width:100%;border:1px solid var(--line);border-radius:12px"/>
-  <p class="muted">spatial 4.34M · spatial_freq 4.46M · spatial_temporal 7.29M · full 7.64M trainable parameters.</p>
-</section>
-
-<section>
-  <h2>4. Headline metrics — video-level AUC</h2>
-  <img src="figures/summary/video_auc_bars.png" alt="Video AUC bar chart" style="width:100%;border:1px solid var(--line);border-radius:12px"/>
-  <table>
-    <tr><th>Variant</th><th>FF++ c23</th><th>c40-style</th><th>SDFVD</th></tr>
-    <tr><td>spatial-only (baseline)</td><td class="num"><strong>0.8000</strong></td><td class="num">0.4000</td><td class="num">0.5041</td></tr>
-    <tr><td>spatial+frequency</td><td class="num">0.6000</td><td class="num">0.2000</td><td class="num">0.5039</td></tr>
-    <tr><td>spatial+temporal</td><td class="num">0.4000</td><td class="num">0.0000</td><td class="num">0.4745</td></tr>
-    <tr><td>full hybrid</td><td class="num">0.4000</td><td class="num">0.2000</td><td class="num">0.4950</td></tr>
-  </table>
-  <p class="note">Dashed line at 0.5 = random ranking. Cross-dataset SDFVD stays near chance for the Phase-2 FF++-only models. FF++/c40 test sets are tiny (6 videos: 5 real, 1 fake), so precision/recall at threshold 0.5 are unstable.</p>
-</section>
-
-<section>
-  <h2>5. Full video-level results table</h2>
-  <table>
-    <tr><th>Variant</th><th>Test set</th><th>n</th><th>AUC</th><th>Acc</th><th>Prec</th><th>Rec</th><th>F1</th></tr>
-    <tr><td>spatial-only</td><td>FF++ c23</td><td class="num">6</td><td class="num">0.8000</td><td class="num">0.6667</td><td class="num">0.0000</td><td class="num">0.0000</td><td class="num">0.0000</td></tr>
-    <tr><td>spatial-only</td><td>c40-style</td><td class="num">6</td><td class="num">0.4000</td><td class="num">0.5000</td><td class="num">0.0000</td><td class="num">0.0000</td><td class="num">0.0000</td></tr>
-    <tr><td>spatial-only</td><td>SDFVD</td><td class="num">106</td><td class="num">0.5041</td><td class="num">0.5000</td><td class="num">0.5000</td><td class="num">0.9245</td><td class="num">0.6490</td></tr>
-    <tr><td>spatial+frequency</td><td>FF++ c23</td><td class="num">6</td><td class="num">0.6000</td><td class="num">0.6667</td><td class="num">0.0000</td><td class="num">0.0000</td><td class="num">0.0000</td></tr>
-    <tr><td>spatial+frequency</td><td>c40-style</td><td class="num">6</td><td class="num">0.2000</td><td class="num">0.5000</td><td class="num">0.0000</td><td class="num">0.0000</td><td class="num">0.0000</td></tr>
-    <tr><td>spatial+frequency</td><td>SDFVD</td><td class="num">106</td><td class="num">0.5039</td><td class="num">0.5094</td><td class="num">0.5059</td><td class="num">0.8113</td><td class="num">0.6232</td></tr>
-    <tr><td>spatial+temporal</td><td>FF++ c23</td><td class="num">6</td><td class="num">0.4000</td><td class="num">0.3333</td><td class="num">0.0000</td><td class="num">0.0000</td><td class="num">0.0000</td></tr>
-    <tr><td>spatial+temporal</td><td>c40-style</td><td class="num">6</td><td class="num">0.0000</td><td class="num">0.3333</td><td class="num">0.0000</td><td class="num">0.0000</td><td class="num">0.0000</td></tr>
-    <tr><td>spatial+temporal</td><td>SDFVD</td><td class="num">106</td><td class="num">0.4745</td><td class="num">0.4906</td><td class="num">0.4945</td><td class="num">0.8491</td><td class="num">0.6250</td></tr>
-    <tr><td>full hybrid</td><td>FF++ c23</td><td class="num">6</td><td class="num">0.4000</td><td class="num">0.5000</td><td class="num">0.0000</td><td class="num">0.0000</td><td class="num">0.0000</td></tr>
-    <tr><td>full hybrid</td><td>c40-style</td><td class="num">6</td><td class="num">0.2000</td><td class="num">0.5000</td><td class="num">0.0000</td><td class="num">0.0000</td><td class="num">0.0000</td></tr>
-    <tr><td>full hybrid</td><td>SDFVD</td><td class="num">106</td><td class="num">0.4950</td><td class="num">0.4717</td><td class="num">0.4842</td><td class="num">0.8679</td><td class="num">0.6216</td></tr>
-  </table>
-</section>
-
-<section>
-  <h2>6. ROC curves (video level)</h2>
-  <p class="muted">One plot per variant × test set. Source: <code>results/roc/*_video.png</code></p>
-
-  <h3>Spatial-only baseline</h3>
-  <div class="grid">
-    <figure><img src="figures/roc/spatial__ffpp_c23_video.png" alt=""/><figcaption>FF++ c23 · video AUC 0.80</figcaption></figure>
-    <figure><img src="figures/roc/spatial__c40_style_video.png" alt=""/><figcaption>c40-style · video AUC 0.40</figcaption></figure>
-    <figure><img src="figures/roc/spatial__sdfvd_video.png" alt=""/><figcaption>SDFVD · video AUC 0.50</figcaption></figure>
-  </div>
-
-  <h3>Spatial + frequency</h3>
-  <div class="grid">
-    <figure><img src="figures/roc/spatial_freq__ffpp_c23_video.png" alt=""/><figcaption>FF++ c23</figcaption></figure>
-    <figure><img src="figures/roc/spatial_freq__c40_style_video.png" alt=""/><figcaption>c40-style</figcaption></figure>
-    <figure><img src="figures/roc/spatial_freq__sdfvd_video.png" alt=""/><figcaption>SDFVD</figcaption></figure>
-  </div>
-
-  <h3>Spatial + temporal (Bi-LSTM)</h3>
-  <div class="grid">
-    <figure><img src="figures/roc/spatial_temporal__ffpp_c23_video.png" alt=""/><figcaption>FF++ c23</figcaption></figure>
-    <figure><img src="figures/roc/spatial_temporal__c40_style_video.png" alt=""/><figcaption>c40-style</figcaption></figure>
-    <figure><img src="figures/roc/spatial_temporal__sdfvd_video.png" alt=""/><figcaption>SDFVD</figcaption></figure>
-  </div>
-
-  <h3>Full hybrid</h3>
-  <div class="grid">
-    <figure><img src="figures/roc/full__ffpp_c23_video.png" alt=""/><figcaption>FF++ c23</figcaption></figure>
-    <figure><img src="figures/roc/full__c40_style_video.png" alt=""/><figcaption>c40-style</figcaption></figure>
-    <figure><img src="figures/roc/full__sdfvd_video.png" alt=""/><figcaption>SDFVD</figcaption></figure>
-  </div>
-</section>
-
-<section>
-  <h2>7. Confusion matrices (video level)</h2>
-  <p class="muted">Threshold = 0.5 · majority vote over sequences · positive class = fake</p>
-
-  <h3>Spatial-only baseline</h3>
-  <div class="grid">
-    <figure><img src="figures/confusion/spatial__ffpp_c23_video.png" alt=""/><figcaption>FF++ c23</figcaption></figure>
-    <figure><img src="figures/confusion/spatial__c40_style_video.png" alt=""/><figcaption>c40-style</figcaption></figure>
-    <figure><img src="figures/confusion/spatial__sdfvd_video.png" alt=""/><figcaption>SDFVD</figcaption></figure>
-  </div>
-
-  <h3>Spatial + frequency</h3>
-  <div class="grid">
-    <figure><img src="figures/confusion/spatial_freq__ffpp_c23_video.png" alt=""/><figcaption>FF++ c23</figcaption></figure>
-    <figure><img src="figures/confusion/spatial_freq__c40_style_video.png" alt=""/><figcaption>c40-style</figcaption></figure>
-    <figure><img src="figures/confusion/spatial_freq__sdfvd_video.png" alt=""/><figcaption>SDFVD</figcaption></figure>
-  </div>
-
-  <h3>Spatial + temporal</h3>
-  <div class="grid">
-    <figure><img src="figures/confusion/spatial_temporal__ffpp_c23_video.png" alt=""/><figcaption>FF++ c23</figcaption></figure>
-    <figure><img src="figures/confusion/spatial_temporal__c40_style_video.png" alt=""/><figcaption>c40-style</figcaption></figure>
-    <figure><img src="figures/confusion/spatial_temporal__sdfvd_video.png" alt=""/><figcaption>SDFVD</figcaption></figure>
-  </div>
-
-  <h3>Full hybrid</h3>
-  <div class="grid">
-    <figure><img src="figures/confusion/full__ffpp_c23_video.png" alt=""/><figcaption>FF++ c23</figcaption></figure>
-    <figure><img src="figures/confusion/full__c40_style_video.png" alt=""/><figcaption>c40-style</figcaption></figure>
-    <figure><img src="figures/confusion/full__sdfvd_video.png" alt=""/><figcaption>SDFVD</figcaption></figure>
-  </div>
-</section>
-
-<section>
-  <h2>8. Grad-CAM explainability (full hybrid, EfficientNet conv_head)</h2>
-  <p class="muted">Heatmaps show where the spatial branch looked when scoring P(fake). Mix of FF++ c23 test and SDFVD frames.</p>
-  <div class="grid-3">
-    <figure><img src="figures/gradcam/ffpp_c23_real_original_004_f000005.png" alt=""/><figcaption>FF++ real · original/004</figcaption></figure>
-    <figure><img src="figures/gradcam/ffpp_c23_real_original_901_f000005.png" alt=""/><figcaption>FF++ real · original/901</figcaption></figure>
-    <figure><img src="figures/gradcam/ffpp_c23_fake_Face2Face_843_859_f000005.png" alt=""/><figcaption>FF++ fake · Face2Face/843_859</figcaption></figure>
-    <figure><img src="figures/gradcam/sdfvd_real_v1.mp4_f000025.png" alt=""/><figcaption>SDFVD real · v1</figcaption></figure>
-    <figure><img src="figures/gradcam/sdfvd_real_v10.mp4_f000025.png" alt=""/><figcaption>SDFVD real · v10</figcaption></figure>
-    <figure><img src="figures/gradcam/sdfvd_fake_vs1.mp4_f000025.png" alt=""/><figcaption>SDFVD fake · vs1</figcaption></figure>
-    <figure><img src="figures/gradcam/sdfvd_fake_vs10.mp4_f000025.png" alt=""/><figcaption>SDFVD fake · vs10</figcaption></figure>
-    <figure><img src="figures/gradcam/sdfvd_fake_vs11.mp4_f000025.png" alt=""/><figcaption>SDFVD fake · vs11</figcaption></figure>
-  </div>
-</section>
-
-<section>
-  <h2>9. Training notes from the run</h2>
-  <ul class="tight">
-    <li>All four variants early-stopped at epoch 5; best checkpoint usually epoch 2 (by val sequence AUC).</li>
-    <li>Val sequence AUC peaks: spatial 0.822 · spatial_freq 0.933 · spatial_temporal 0.893 · full 0.862</li>
-    <li>Micro-batch 4, effective batch 8, FP16, gradient checkpointing on EfficientNet (4 GB GPU).</li>
-    <li>Prototype demo weights: fine-tuned spatial on SDFVD → val AUC 0.9801 (<code>checkpoints/prototype/best.pt</code>).</li>
-  </ul>
-</section>
-
-<section>
-  <h2>10. How to present this</h2>
+<!-- ===================== BASICS ===================== -->
+<section id="basics">
+  <h2>0. How to read this report</h2>
+  <p>The Phase-2 pipeline trained <strong>four models</strong> on a small FaceForensics++ c23 subset, then tested each once on three sets:</p>
   <ol>
-    <li>Open this HTML in a browser (Ctrl+P → Save as PDF if needed).</li>
-    <li>Show FrameForge live at <code>http://127.0.0.1:7860</code>.</li>
-    <li>Point to GitHub: <a href="https://github.com/ishita0705/hybrid-deepfake-detection">ishita0705/hybrid-deepfake-detection</a>.</li>
-    <li>Written narrative: <code>docs/PROJECT_REPORT.md</code> · viva prep: <code>docs/VIVA_QA.md</code>.</li>
+    <li><strong>FF++ c23 test</strong> — same family as training (in-domain)</li>
+    <li><strong>c40-style (simulated)</strong> — same test videos, heavily re-compressed</li>
+    <li><strong>SDFVD</strong> — different source (Pexels real + Remaker face-swaps), no Phase-2 retraining</li>
   </ol>
-  <p class="note">Sequence-level ROC/confusion plots also exist under <code>D:\deepfake_phase2\results\</code>; this pack focuses on video-level figures for the oral demo.</p>
+  <p>Every number and plot below comes from that run (and the Grad-CAM script). Nothing is invented for the report.</p>
+  <div class="callout">
+    <strong>Positive class = fake.</strong> The model outputs <code>P(fake)</code> between 0 and 1.
+    A score ≥ 0.5 is counted as “fake” for accuracy / precision / recall / F1.
+    AUC uses the continuous scores (ranking quality), so it can look OK even when the 0.5 threshold looks bad.
+  </div>
+</section>
+
+<section>
+  <h2>1. What each model variant is</h2>
+  <table>
+    <tr><th>Name in plots</th><th>What it uses</th><th>Params</th></tr>
+    <tr><td>spatial-only (baseline)</td><td>EfficientNet-B0 on face crops; mean-pool 10 frames</td><td class="num">4.34M</td></tr>
+    <tr><td>spatial+frequency</td><td>Above + small CNN on FFT magnitude map</td><td class="num">4.46M</td></tr>
+    <tr><td>spatial+temporal</td><td>Spatial features through a Bi-LSTM over 10 frames</td><td class="num">7.29M</td></tr>
+    <tr><td>full hybrid</td><td>Spatial + frequency, then Bi-LSTM</td><td class="num">7.64M</td></tr>
+  </table>
+  <div class="wide" style="margin-top:1rem">
+    <img src="figures/summary/param_counts.png" alt="Parameter counts"/>
+  </div>
+  <p class="muted">Bigger is not automatically better on a 40-video training subset — the baseline often won in-domain.</p>
+</section>
+
+<!-- ===================== DATA ===================== -->
+<section id="data">
+  <h2>2. Data: what went into training and testing</h2>
+  <h3>Sample frame from the FF++ mirror (inspect step)</h3>
+  <img class="hero" src="figures/data/sample_frame.jpg" alt="Sample frame"/>
+  <p>This is one raw frame saved during <code>data_prep --step inspect</code>. Size was 640×480, so the pipeline treated inputs as <strong>full frames</strong> and ran <strong>MTCNN</strong> to crop the face to 224×224 (no landmark alignment).</p>
+  <table>
+    <tr><th>Split / set</th><th>What it contains (this run)</th></tr>
+    <tr><td>FF++ after balance</td><td>20 real + 20 fake videos (5 per Deepfakes / Face2Face / FaceSwap / NeuralTextures)</td></tr>
+    <tr><td>Sequences</td><td>train 148 · val 30 · test 30 (10 frames each, stride 10)</td></tr>
+    <tr><td>FF++ / c40 test videos</td><td>6 videos only → <strong>5 real, 1 fake</strong> (important for F1=0 explanations below)</td></tr>
+    <tr><td>SDFVD</td><td>106 videos, 176 sequences, balanced 53/53</td></tr>
+  </table>
+</section>
+
+<!-- ===================== METRICS HEADLINE ===================== -->
+<section id="metrics">
+  <h2>3. Headline result chart — video AUC</h2>
+  <div class="wide">
+    <img src="figures/summary/video_auc_bars.png" alt="Video AUC bars"/>
+  </div>
+  <h3>How to read this chart</h3>
+  <ul>
+    <li>Each group of bars is one <strong>test set</strong>.</li>
+    <li>Each colored bar is one <strong>model variant</strong>.</li>
+    <li>Height = <strong>video-level AUC-ROC</strong> (1.0 perfect ranking, 0.5 random, &lt;0.5 worse than chance).</li>
+    <li>The dashed line at 0.5 is the “guess randomly” baseline.</li>
+  </ul>
+  <h3>What the chart says in plain words</h3>
+  <ol class="explain">
+    <li><strong>FF++ c23 (left group):</strong> spatial-only is best (0.80). Adding frequency/LSTM did not help on this tiny test set.</li>
+    <li><strong>c40-style (middle):</strong> every bar drops. Heavy compression destroys many forensic texture/spectrum cues.</li>
+    <li><strong>SDFVD (right):</strong> all bars hug ~0.50. Phase-2 models trained only on FF++ did not transfer to Remaker/Pexels clips.</li>
+  </ol>
+  <table>
+    <tr><th>Variant</th><th>FF++ c23 AUC</th><th>c40-style AUC</th><th>SDFVD AUC</th><th>One-line interpretation</th></tr>
+    <tr><td>spatial-only</td><td class="num"><strong>0.8000</strong></td><td class="num">0.4000</td><td class="num">0.5041</td><td>Best in-domain; fails under compression &amp; cross-dataset</td></tr>
+    <tr><td>spatial+frequency</td><td class="num">0.6000</td><td class="num">0.2000</td><td class="num">0.5039</td><td>FFT branch did not beat baseline here</td></tr>
+    <tr><td>spatial+temporal</td><td class="num">0.4000</td><td class="num">0.0000</td><td class="num">0.4745</td><td>LSTM overfit / under-trained on small data</td></tr>
+    <tr><td>full hybrid</td><td class="num">0.4000</td><td class="num">0.2000</td><td class="num">0.4950</td><td>Most capacity, weakest transfer in this run</td></tr>
+  </table>
+  <p class="note">Later, for the <strong>web demo only</strong>, the spatial checkpoint was fine-tuned on SDFVD (val AUC ≈ 0.98). That demo model is separate from the Phase-2 ablation table above.</p>
+</section>
+
+<section>
+  <h2>4. Full metrics table — what each column means</h2>
+  <ul>
+    <li><strong>n</strong> — number of videos (video level) or sequences (sequence level).</li>
+    <li><strong>AUC-ROC</strong> — can we rank fakes above reals using the score? Threshold-free.</li>
+    <li><strong>Accuracy</strong> — fraction of correct hard decisions at threshold 0.5 (video = majority vote of sequences).</li>
+    <li><strong>Precision</strong> — of videos called fake, how many really were fake?</li>
+    <li><strong>Recall</strong> — of true fakes, how many did we catch?</li>
+    <li><strong>F1</strong> — harmonic mean of precision and recall for the fake class.</li>
+  </ul>
+  <h3>Video level (main official table)</h3>
+  <table>
+    <tr><th>Variant</th><th>Test</th><th>n</th><th>AUC</th><th>Acc</th><th>Prec</th><th>Rec</th><th>F1</th><th>Explain</th></tr>
+    <tr><td>spatial</td><td>FF++ c23</td><td class="num">6</td><td class="num">0.80</td><td class="num">0.67</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td>Ranks well (AUC 0.8) but the single fake video was not voted fake at 0.5 → F1=0</td></tr>
+    <tr><td>spatial</td><td>c40</td><td class="num">6</td><td class="num">0.40</td><td class="num">0.50</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td>Worse than chance ranking after compression</td></tr>
+    <tr><td>spatial</td><td>SDFVD</td><td class="num">106</td><td class="num">0.50</td><td class="num">0.50</td><td class="num">0.50</td><td class="num">0.92</td><td class="num">0.65</td><td>Almost random AUC; high recall = labels almost everything fake</td></tr>
+    <tr><td>spatial_freq</td><td>FF++ c23</td><td class="num">6</td><td class="num">0.60</td><td class="num">0.67</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td>Weaker than spatial baseline</td></tr>
+    <tr><td>spatial_freq</td><td>c40</td><td class="num">6</td><td class="num">0.20</td><td class="num">0.50</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td>Compression hurts frequency cues hard</td></tr>
+    <tr><td>spatial_freq</td><td>SDFVD</td><td class="num">106</td><td class="num">0.50</td><td class="num">0.51</td><td class="num">0.51</td><td class="num">0.81</td><td class="num">0.62</td><td>Still ~chance on cross-dataset</td></tr>
+    <tr><td>spatial_temporal</td><td>FF++ c23</td><td class="num">6</td><td class="num">0.40</td><td class="num">0.33</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td>LSTM did not help with so little data</td></tr>
+    <tr><td>spatial_temporal</td><td>c40</td><td class="num">6</td><td class="num">0.00</td><td class="num">0.33</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td>AUC 0 = rankings inverted vs labels</td></tr>
+    <tr><td>spatial_temporal</td><td>SDFVD</td><td class="num">106</td><td class="num">0.47</td><td class="num">0.49</td><td class="num">0.49</td><td class="num">0.85</td><td class="num">0.63</td><td>Slightly below chance</td></tr>
+    <tr><td>full</td><td>FF++ c23</td><td class="num">6</td><td class="num">0.40</td><td class="num">0.50</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td>Full hybrid underperformed baseline here</td></tr>
+    <tr><td>full</td><td>c40</td><td class="num">6</td><td class="num">0.20</td><td class="num">0.50</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td>No compression robustness gained</td></tr>
+    <tr><td>full</td><td>SDFVD</td><td class="num">106</td><td class="num">0.50</td><td class="num">0.47</td><td class="num">0.48</td><td class="num">0.87</td><td class="num">0.62</td><td>Near chance; biased toward predicting fake</td></tr>
+  </table>
+  <div class="callout">
+    <strong>Why precision/recall are often 0 on FF++ and c40:</strong>
+    Those test sets have only <strong>one fake video</strong>. If the model’s majority vote marks that video as real, recall of fake = 0 and F1 = 0 —
+    even if AUC is 0.8 because the fake’s score still ranks above some reals.
+  </div>
+</section>
+
+<!-- ===================== ROC ===================== -->
+<section id="roc">
+  <h2>5. ROC curves — explained from scratch, then every plot</h2>
+
+  <h3>5.1 What is an ROC curve?</h3>
+  <ol class="explain">
+    <li>The model gives every video a score <code>P(fake)</code>.</li>
+    <li>Imagine sliding the decision threshold from 1 → 0.</li>
+    <li>For each threshold, plot:
+      <ul>
+        <li><strong>True positive rate (y)</strong> = fraction of real fakes caught</li>
+        <li><strong>False positive rate (x)</strong> = fraction of reals wrongly called fake</li>
+      </ul>
+    </li>
+    <li>The curve traces that trade-off. The <strong>AUC</strong> is the area under it.</li>
+    <li>Diagonal dashed line = random guessing (AUC 0.5).</li>
+    <li>A curve that hugs the top-left is good. A curve under the diagonal is worse than chance.</li>
+  </ol>
+  <p class="note">With only 6 videos, ROC curves look like <strong>stairs</strong> (few possible score orderings). That is normal, not a plotting bug.</p>
+
+  <h3>5.2 Spatial-only — ROC (video)</h3>
+  <div class="grid">
+    <div class="card">
+      <img src="figures/roc/spatial__ffpp_c23_video.png" alt=""/>
+      <div class="body">
+        <strong>FF++ c23 · AUC = 0.80</strong>
+        Best plot in the project. The curve rises above the diagonal, so the model ranks the fake video above most reals.
+        The step shape appears because there are only 6 discrete video scores.
+        <em>Meaning:</em> in-domain ranking works for the spatial baseline.
+      </div>
+    </div>
+    <div class="card">
+      <img src="figures/roc/spatial__c40_style_video.png" alt=""/>
+      <div class="body">
+        <strong>c40-style · AUC = 0.40</strong>
+        Curve falls toward / under chance. After CRF-40 compression, spatial cues that worked on c23 are damaged.
+        <em>Meaning:</em> this detector is not compression-robust on this subset.
+      </div>
+    </div>
+    <div class="card">
+      <img src="figures/roc/spatial__sdfvd_video.png" alt=""/>
+      <div class="body">
+        <strong>SDFVD · AUC ≈ 0.50</strong>
+        Curve sits on the diagonal. Scores do not systematically put Remaker fakes above Pexels reals.
+        <em>Meaning:</em> no useful cross-dataset separation without fine-tuning.
+      </div>
+    </div>
+  </div>
+
+  <h3>5.3 Spatial + frequency — ROC (video)</h3>
+  <div class="grid">
+    <div class="card">
+      <img src="figures/roc/spatial_freq__ffpp_c23_video.png" alt=""/>
+      <div class="body">
+        <strong>FF++ c23 · AUC = 0.60</strong>
+        Better than chance, weaker than spatial-only (0.80). The FFT branch did not improve ranking on this tiny test.
+      </div>
+    </div>
+    <div class="card">
+      <img src="figures/roc/spatial_freq__c40_style_video.png" alt=""/>
+      <div class="body">
+        <strong>c40-style · AUC = 0.20</strong>
+        Far below chance. Compression especially hurts frequency forensics (high-frequency energy is quantized away).
+      </div>
+    </div>
+    <div class="card">
+      <img src="figures/roc/spatial_freq__sdfvd_video.png" alt=""/>
+      <div class="body">
+        <strong>SDFVD · AUC ≈ 0.50</strong>
+        Again ~random. Frequency features learned on FF++ did not transfer to SDFVD.
+      </div>
+    </div>
+  </div>
+
+  <h3>5.4 Spatial + temporal — ROC (video)</h3>
+  <div class="grid">
+    <div class="card">
+      <img src="figures/roc/spatial_temporal__ffpp_c23_video.png" alt=""/>
+      <div class="body">
+        <strong>FF++ c23 · AUC = 0.40</strong>
+        Below chance. With ~148 training sequences, the Bi-LSTM likely overfit noise instead of learning stable temporal deepfake cues.
+      </div>
+    </div>
+    <div class="card">
+      <img src="figures/roc/spatial_temporal__c40_style_video.png" alt=""/>
+      <div class="body">
+        <strong>c40-style · AUC = 0.00</strong>
+        Worst possible ranking on this set (fake ranked below all reals). Treat as a failure mode under compression + small data.
+      </div>
+    </div>
+    <div class="card">
+      <img src="figures/roc/spatial_temporal__sdfvd_video.png" alt=""/>
+      <div class="body">
+        <strong>SDFVD · AUC ≈ 0.47</strong>
+        Slightly worse than random. Temporal head did not generalize.
+      </div>
+    </div>
+  </div>
+
+  <h3>5.5 Full hybrid — ROC (video)</h3>
+  <div class="grid">
+    <div class="card">
+      <img src="figures/roc/full__ffpp_c23_video.png" alt=""/>
+      <div class="body">
+        <strong>FF++ c23 · AUC = 0.40</strong>
+        Combining all branches did not beat the simple spatial model. Extra capacity needed more data than we used.
+      </div>
+    </div>
+    <div class="card">
+      <img src="figures/roc/full__c40_style_video.png" alt=""/>
+      <div class="body">
+        <strong>c40-style · AUC = 0.20</strong>
+        Same compression collapse pattern as other non-baseline variants.
+      </div>
+    </div>
+    <div class="card">
+      <img src="figures/roc/full__sdfvd_video.png" alt=""/>
+      <div class="body">
+        <strong>SDFVD · AUC ≈ 0.50</strong>
+        No free lunch: hybrid architecture ≠ automatic cross-dataset performance.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== CONFUSION ===================== -->
+<section id="cm">
+  <h2>6. Confusion matrices — explained from scratch, then every plot</h2>
+
+  <h3>6.1 What is a confusion matrix?</h3>
+  <p>After applying threshold 0.5 (and majority vote for videos), each video gets a hard label: predicted real or fake. The matrix counts:</p>
+  <table>
+    <tr><th></th><th>Predicted real</th><th>Predicted fake</th></tr>
+    <tr><th>Actual real</th><td>True real (correct)</td><td>False fake (false alarm)</td></tr>
+    <tr><th>Actual fake</th><td>Missed fake</td><td>True fake (caught)</td></tr>
+  </table>
+  <p>Darker cells = higher counts. With 6 FF++ test videos you will often see numbers like 4, 1, 1, 0.</p>
+
+  <h3>6.2 Spatial-only — confusion (video)</h3>
+  <div class="grid">
+    <div class="card">
+      <img src="figures/confusion/spatial__ffpp_c23_video.png" alt=""/>
+      <div class="body">
+        <strong>FF++ c23</strong>
+        Typical pattern: many reals correct, the lone fake missed (bottom-right often 0). That is exactly why recall/F1 for fake are 0 even though AUC is 0.80.
+      </div>
+    </div>
+    <div class="card">
+      <img src="figures/confusion/spatial__c40_style_video.png" alt=""/>
+      <div class="body">
+        <strong>c40-style</strong>
+        Decisions look closer to coin-flip / biased. Compression changed scores so the 0.5 threshold no longer separates classes.
+      </div>
+    </div>
+    <div class="card">
+      <img src="figures/confusion/spatial__sdfvd_video.png" alt=""/>
+      <div class="body">
+        <strong>SDFVD</strong>
+        Large counts because n=106. High fake-recall with ~0.5 AUC means the model often predicts “fake” for both classes — accuracy can look middling while ranking is useless.
+      </div>
+    </div>
+  </div>
+
+  <h3>6.3 Spatial + frequency — confusion (video)</h3>
+  <div class="grid">
+    <div class="card">
+      <img src="figures/confusion/spatial_freq__ffpp_c23_video.png" alt=""/>
+      <div class="body"><strong>FF++ c23</strong> — Same tiny-set story: misses the single fake at threshold 0.5.</div>
+    </div>
+    <div class="card">
+      <img src="figures/confusion/spatial_freq__c40_style_video.png" alt=""/>
+      <div class="body"><strong>c40-style</strong> — Hard labels remain poor after compression.</div>
+    </div>
+    <div class="card">
+      <img src="figures/confusion/spatial_freq__sdfvd_video.png" alt=""/>
+      <div class="body"><strong>SDFVD</strong> — Still no clean diagonal of correct real/fake blocks.</div>
+    </div>
+  </div>
+
+  <h3>6.4 Spatial + temporal — confusion (video)</h3>
+  <div class="grid">
+    <div class="card">
+      <img src="figures/confusion/spatial_temporal__ffpp_c23_video.png" alt=""/>
+      <div class="body"><strong>FF++ c23</strong> — Accuracy only 0.33; more mistakes than the spatial baseline.</div>
+    </div>
+    <div class="card">
+      <img src="figures/confusion/spatial_temporal__c40_style_video.png" alt=""/>
+      <div class="body"><strong>c40-style</strong> — Matches the disastrous AUC=0 ranking failure.</div>
+    </div>
+    <div class="card">
+      <img src="figures/confusion/spatial_temporal__sdfvd_video.png" alt=""/>
+      <div class="body"><strong>SDFVD</strong> — Confusions show the model does not form a reliable decision boundary.</div>
+    </div>
+  </div>
+
+  <h3>6.5 Full hybrid — confusion (video)</h3>
+  <div class="grid">
+    <div class="card">
+      <img src="figures/confusion/full__ffpp_c23_video.png" alt=""/>
+      <div class="body"><strong>FF++ c23</strong> — Accuracy 0.5; does not catch the fake video at 0.5 threshold.</div>
+    </div>
+    <div class="card">
+      <img src="figures/confusion/full__c40_style_video.png" alt=""/>
+      <div class="body"><strong>c40-style</strong> — No robustness benefit from combining branches.</div>
+    </div>
+    <div class="card">
+      <img src="figures/confusion/full__sdfvd_video.png" alt=""/>
+      <div class="body"><strong>SDFVD</strong> — High fake-leaning predictions with near-chance AUC (biased threshold behavior).</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== GRADCAM ===================== -->
+<section id="gradcam">
+  <h2>7. Grad-CAM — from scratch, then every image</h2>
+
+  <h3>7.1 What Grad-CAM is (beginner → project-specific)</h3>
+  <ol class="explain">
+    <li><strong>Problem:</strong> a CNN outputs a number (here P(fake)), but we cannot see <em>why</em>.</li>
+    <li><strong>Idea:</strong> look at the last spatial convolution layer of EfficientNet (<code>conv_head</code>). That layer still has a 2D map over the face.</li>
+    <li><strong>Gradients:</strong> compute how much each map location would change P(fake) if it got stronger.</li>
+    <li><strong>Weights:</strong> average those gradients → importance of each channel.</li>
+    <li><strong>Heatmap:</strong> weighted sum of activation maps → upsample to 224×224 → overlay on the face crop.</li>
+    <li><strong>Colors (jet map in our plots):</strong>
+      <ul>
+        <li><span style="color:#c0392b;font-weight:700">Red / orange</span> = high contribution toward the fake score</li>
+        <li><span style="color:#27ae60;font-weight:700">Yellow / green</span> = medium</li>
+        <li><span style="color:#2980b9;font-weight:700">Blue / purple</span> = low contribution</li>
+      </ul>
+    </li>
+  </ol>
+  <div class="callout">
+    <strong>Important limits:</strong> Grad-CAM explains the <em>spatial EfficientNet branch</em> of the full hybrid, for one frame.
+    It is not a proof the video is fake/real, and red regions are not automatically “the forged pixels.”
+    They are “pixels the CNN used when increasing P(fake).”
+  </div>
+  <p>In this project, Grad-CAM was run with the <strong>full hybrid</strong> checkpoint. The LSTM is put in train mode only so cuDNN allows backward; the LSTM has no dropout, so outputs stay the same.</p>
+
+  <h3>7.2 How each overlay was chosen</h3>
+  <ul>
+    <li>Up to 2 real + remaining fakes from FF++ c23 test and SDFVD (manifest order, one frame per video).</li>
+    <li>Middle frame of the sequence.</li>
+    <li>Saved under <code>results/gradcam/</code> with <code>index.json</code> storing P(fake) for that frame.</li>
+  </ul>
+
+  <!-- IMAGE 1 -->
+  <h3>7.3 Image-by-image explanation</h3>
+
+  <div class="card" style="margin-top:1rem">
+    <div class="grid" style="grid-template-columns: 280px 1fr; gap:0">
+      <img src="figures/gradcam/ffpp_c23_real_original_004_f000005.png" alt="gradcam real 004"/>
+      <div class="body">
+        <span class="tag real">REAL label</span>
+        <strong style="margin-top:.45rem">1) FF++ c23 · original/004 · frame 5</strong>
+        <p><strong>Ground truth:</strong> authentic FF++ original video.<br/>
+        <strong>Model P(fake):</strong> 0.387 → below 0.5, so the frame scores as real.</p>
+        <p><strong>What you see:</strong> strongest red on the lower cheek / jaw–collar region; yellow on forehead; mostly blue elsewhere; a small hot spot in the background left.</p>
+        <p><strong>How to interpret:</strong> for this real face, the network’s fake-score explanation is not tightly locked on classic “eye–nose–mouth” forensics; some attention leaks to clothing boundary / background.
+        Because P(fake) is still low, those regions did not push the score over the fake threshold.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:1rem">
+    <div class="grid" style="grid-template-columns: 280px 1fr; gap:0">
+      <img src="figures/gradcam/ffpp_c23_real_original_901_f000005.png" alt="gradcam real 901"/>
+      <div class="body">
+        <span class="tag real">REAL label</span>
+        <strong style="margin-top:.45rem">2) FF++ c23 · original/901 · frame 5</strong>
+        <p><strong>Ground truth:</strong> authentic.<br/>
+        <strong>Model P(fake):</strong> 0.555 → slightly above 0.5 (false-leaning on this single frame).</p>
+        <p><strong>What this teaches:</strong> even real frames can cross the threshold. Grad-CAM for this case shows where the spatial net looked while producing that mildly elevated fake score — useful for debugging threshold / domain issues, not for accusing the person.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:1rem">
+    <div class="grid" style="grid-template-columns: 280px 1fr; gap:0">
+      <img src="figures/gradcam/ffpp_c23_fake_Face2Face_843_859_f000005.png" alt="gradcam fake f2f"/>
+      <div class="body">
+        <span class="tag fake">FAKE label</span>
+        <strong style="margin-top:.45rem">3) FF++ c23 · Face2Face/843_859 · frame 5</strong>
+        <p><strong>Ground truth:</strong> Face2Face manipulation (expression transfer style forgery).<br/>
+        <strong>Model P(fake):</strong> 0.419 → below 0.5 on this frame (miss at frame level).</p>
+        <p><strong>Heatmap:</strong> hottest band across the <strong>forehead / hairline</strong>; eyes–mouth stay cooler (blue/purple).</p>
+        <p><strong>Interpretation:</strong> the spatial branch’s explanation for “fake” here emphasizes upper-head texture rather than the mouth (where Face2Face often operates). Combined with P(fake)&lt;0.5, this matches the quantitative story: the Phase-2 full model was not reliably catching this test fake at threshold 0.5.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:1rem">
+    <div class="grid" style="grid-template-columns: 280px 1fr; gap:0">
+      <img src="figures/gradcam/sdfvd_real_v1.mp4_f000025.png" alt="gradcam sdfvd real v1"/>
+      <div class="body">
+        <span class="tag real">REAL label</span>
+        <strong style="margin-top:.45rem">4) SDFVD · v1.mp4 · frame 25</strong>
+        <p><strong>Ground truth:</strong> real Pexels clip (SDFVD).<br/>
+        <strong>Model P(fake):</strong> 0.687 → incorrectly high (cross-dataset false alarm on this frame).</p>
+        <p><strong>Why it matters:</strong> this is a concrete picture of domain shift — a real web-style video gets a “fake-looking” score from an FF++-trained net. Grad-CAM shows which face regions drove that mistaken elevation of P(fake).</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:1rem">
+    <div class="grid" style="grid-template-columns: 280px 1fr; gap:0">
+      <img src="figures/gradcam/sdfvd_real_v10.mp4_f000025.png" alt="gradcam sdfvd real v10"/>
+      <div class="body">
+        <span class="tag real">REAL label</span>
+        <strong style="margin-top:.45rem">5) SDFVD · v10.mp4 · frame 25</strong>
+        <p><strong>Ground truth:</strong> real.<br/>
+        <strong>Model P(fake):</strong> 0.657 → again falsely high.</p>
+        <p>Same lesson as v1: before prototype fine-tuning, SDFVD reals were often scored like fakes. That is why Phase-2 SDFVD AUC sat near 0.5 and why we later fine-tuned for the web demo.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:1rem">
+    <div class="grid" style="grid-template-columns: 280px 1fr; gap:0">
+      <img src="figures/gradcam/sdfvd_fake_vs1.mp4_f000025.png" alt="gradcam sdfvd fake vs1"/>
+      <div class="body">
+        <span class="tag fake">FAKE label</span>
+        <strong style="margin-top:.45rem">6) SDFVD · vs1.mp4 · frame 25</strong>
+        <p><strong>Ground truth:</strong> Remaker AI face-swap deepfake.<br/>
+        <strong>Model P(fake):</strong> 0.686.</p>
+        <p><strong>Heatmap:</strong> intense red over the <strong>eye region</strong> (especially one eye), cooler on beard/background.</p>
+        <p><strong>Interpretation:</strong> for this swap, the spatial net’s fake explanation focuses on periocular appearance — a common place face-swaps leave blending / identity artifacts. Score &gt; 0.5 agrees with the fake label on this frame, but remember AUC on the whole SDFVD set was still ~0.5, so success on single frames does not equal dataset-wide separation.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:1rem">
+    <div class="grid" style="grid-template-columns: 280px 1fr; gap:0">
+      <img src="figures/gradcam/sdfvd_fake_vs10.mp4_f000025.png" alt="gradcam sdfvd fake vs10"/>
+      <div class="body">
+        <span class="tag fake">FAKE label</span>
+        <strong style="margin-top:.45rem">7) SDFVD · vs10.mp4 · frame 25</strong>
+        <p><strong>Ground truth:</strong> fake.<br/>
+        <strong>Model P(fake):</strong> 0.545 → just above threshold.</p>
+        <p>Borderline score: the model is only weakly confident. Grad-CAM still shows which face areas contributed to tipping P(fake) slightly over 0.5. Useful viva line: “threshold decisions can be fragile even when the label is correct.”</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:1rem">
+    <div class="grid" style="grid-template-columns: 280px 1fr; gap:0">
+      <img src="figures/gradcam/sdfvd_fake_vs11.mp4_f000025.png" alt="gradcam sdfvd fake vs11"/>
+      <div class="body">
+        <span class="tag fake">FAKE label</span>
+        <strong style="margin-top:.45rem">8) SDFVD · vs11.mp4 · frame 25</strong>
+        <p><strong>Ground truth:</strong> fake.<br/>
+        <strong>Model P(fake):</strong> 0.591.</p>
+        <p>Another swapped identity where the explanation heatmap localizes on facial interior regions rather than the whole frame. Together with images 6–7, this shows Grad-CAM outputs for known fakes in the cross-dataset set.</p>
+      </div>
+    </div>
+  </div>
+
+  <h3>7.4 Grad-CAM summary table</h3>
+  <table>
+    <tr><th>#</th><th>File</th><th>True label</th><th>P(fake)</th><th>Frame decision @0.5</th><th>Main visual takeaway</th></tr>
+    <tr><td>1</td><td>original/004</td><td>real</td><td class="num">0.387</td><td>real ✓</td><td>Jaw/collar + forehead focus; low fake score</td></tr>
+    <tr><td>2</td><td>original/901</td><td>real</td><td class="num">0.555</td><td>fake ✗</td><td>Real frame false-alarm at threshold</td></tr>
+    <tr><td>3</td><td>Face2Face/843_859</td><td>fake</td><td class="num">0.419</td><td>real ✗</td><td>Forehead band; missed fake on this frame</td></tr>
+    <tr><td>4</td><td>SDFVD v1</td><td>real</td><td class="num">0.687</td><td>fake ✗</td><td>Domain-shift false alarm</td></tr>
+    <tr><td>5</td><td>SDFVD v10</td><td>real</td><td class="num">0.657</td><td>fake ✗</td><td>Same cross-dataset issue</td></tr>
+    <tr><td>6</td><td>SDFVD vs1</td><td>fake</td><td class="num">0.686</td><td>fake ✓</td><td>Strong eye-region explanation</td></tr>
+    <tr><td>7</td><td>SDFVD vs10</td><td>fake</td><td class="num">0.545</td><td>fake ✓</td><td>Barely over threshold</td></tr>
+    <tr><td>8</td><td>SDFVD vs11</td><td>fake</td><td class="num">0.591</td><td>fake ✓</td><td>Interior-face focus on a swap</td></tr>
+  </table>
+</section>
+
+<!-- ===================== TAKEAWAYS ===================== -->
+<section id="takeaways">
+  <h2>8. Overall conclusions (for viva / report ending)</h2>
+  <ol class="explain">
+    <li><strong>Pipeline works end-to-end:</strong> data prep, four ablations, metrics, ROC/CM plots, Grad-CAM, and a web prototype.</li>
+    <li><strong>With a small FF++ subset, spatial-only was the strongest in-domain model</strong> (video AUC 0.80 on FF++ c23).</li>
+    <li><strong>Compression (c40-style) and cross-dataset (SDFVD) expose failure:</strong> AUCs fall to ≤0.4 or ~0.5.</li>
+    <li><strong>F1=0 on tiny FF++/c40 tests is explained by class imbalance</strong> (1 fake video), not by “AUC lying.”</li>
+    <li><strong>Grad-CAM makes mistakes and successes visible</strong> at the face-region level; it supports discussion, not forensic certainty.</li>
+    <li><strong>Demo fix:</strong> SDFVD fine-tune of the spatial model (val AUC ≈ 0.98) is what FrameForge uses for uploads — separate from the Phase-2 ablation numbers.</li>
+  </ol>
+  <p class="note">Print tip: open this file in Chrome/Edge → Ctrl+P → Save as PDF for submission.</p>
 </section>
 
 </main>
 <footer>
-  Hybrid deepfake Phase 2 · visual report generated from the local run under D:\deepfake_phase2
+  Detailed visual report · figures under docs/figures · metrics from D:\deepfake_phase2\results
 </footer>
 </body>
 </html>
