@@ -2,7 +2,7 @@
 
 Spatial EfficientNet-B0, a frequency FFT branch, Bi-LSTM, and Grad-CAM. Runs in Google Colab (T4, PyTorch 2.x). Every path is set in `deepfake_hybrid/config.py`.
 
-**Docs:** [Project report](docs/PROJECT_REPORT.md) · [Viva / interview Q&A](docs/VIVA_QA.md) · [Scope & deviations](scope_implemented.md)
+**Docs:** [Visual report (with figures)](docs/VISUAL_REPORT.html) · [Project report](docs/PROJECT_REPORT.md) · [Viva Q&A](docs/VIVA_QA.md) · [Scope](scope_implemented.md)
 
 ## What is on disk
 
