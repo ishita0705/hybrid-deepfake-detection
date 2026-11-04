@@ -1,0 +1,22 @@
+# Data prep for Colab. PyTorch 2.x is already installed on the Colab runtime.
+# Install facenet-pytorch with --no-deps so pip does not replace that torch.
+# See README.md for the exact commands.
+datasets>=2.18.0
+Pillow>=9.0
+opencv-python>=4.8
+numpy>=1.24
+tqdm>=4.66
+facenet-pytorch>=2.5.2
+
+# Used by the model / evaluation step (that code is not in this stage yet).
+timm>=0.9.0
+scikit-learn>=1.3
+matplotlib>=3.7
+# PyPI name of the pytorch-grad-cam library (import pytorch_grad_cam).
+grad-cam>=1.5.0
+# Optional: python -m deepfake_hybrid.prototype --ui
+gradio>=4.0
+# Web app: python web/run.py
+fastapi>=0.110
+uvicorn>=0.27
+python-multipart>=0.0.9

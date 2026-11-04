@@ -1,0 +1,22 @@
+﻿Demo media sources
+==================
+
+REAL videos
+  From SDFVD videos_real (Pexels stock footage).
+  Dataset: https://data.mendeley.com/datasets/bcmkfgct2s  (CC BY 4.0)
+
+FAKE videos
+  From SDFVD videos_fake (Remaker AI face-swaps).
+  Same SDFVD dataset (CC BY 4.0).
+
+REAL photos
+  Frames from SDFVD real clips + Unsplash portraits (Unsplash License).
+
+FAKE photos
+  Frames extracted from SDFVD fake clips.
+
+to_check/ (unlabeled blind demo)
+  clip_a.mp4, clip_c.mp4, photo_e.jpg  -> real
+  clip_b.mp4, clip_d.mp4, photo_f.jpg  -> fake
+
+Do not claim these web portraits are deepfakes; only the SDFVD "fake_*" files are known face-swaps.

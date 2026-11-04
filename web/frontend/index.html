@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FrameForge — deepfake check</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,500;8..60,700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <div class="noise" aria-hidden="true"></div>
+
+  <header class="top">
+    <div class="brand">
+      <span class="mark" aria-hidden="true"></span>
+      <span class="brand-name">FrameForge</span>
+    </div>
+    <p class="status" id="healthStatus">Checking backend…</p>
+  </header>
+
+  <main>
+    <section class="hero">
+      <p class="eyebrow">Hybrid deepfake prototype</p>
+      <h1>FrameForge</h1>
+      <p class="lede">
+        Drop a video or photo. The Phase‑2 model scores faces with EfficientNet,
+        frequency cues, and a Bi‑LSTM — then returns a full analysis report.
+      </p>
+
+      <form class="drop" id="uploadForm">
+        <input type="file" id="fileInput" accept="image/*,video/*" hidden />
+        <button type="button" class="drop-zone" id="dropZone">
+          <strong>Upload video or image</strong>
+          <span>MP4, MOV, JPG, PNG from your computer</span>
+        </button>
+        <div class="actions">
+          <button type="submit" class="btn primary" id="analyzeBtn" disabled>Analyze</button>
+          <span class="file-label" id="fileLabel">No file selected</span>
+        </div>
+      </form>
+    </section>
+
+    <section class="panel" id="progressPanel" hidden>
+      <div class="spinner" aria-hidden="true"></div>
+      <p>Running face crop, frequency maps, and model inference…</p>
+      <p class="muted">First run can take a minute on this GPU.</p>
+    </section>
+
+    <section class="panel result" id="resultPanel" hidden>
+      <div class="verdict-row">
+        <p class="verdict" id="verdictBadge">—</p>
+        <div>
+          <p class="score-line">P(fake) = <strong id="meanScore">—</strong></p>
+          <p class="muted" id="verdictDetail"></p>
+        </div>
+      </div>
+
+      <div class="stats" id="statGrid"></div>
+
+      <h2>Sequence scores</h2>
+      <div class="bars" id="scoreBars"></div>
+
+      <h2>Face crops</h2>
+      <div class="faces" id="faceGallery"></div>
+
+      <h2 id="camHeading" hidden>Grad-CAM</h2>
+      <img id="gradcamImg" class="cam" alt="Grad-CAM overlay" hidden />
+
+      <div class="report-links">
+        <a class="btn" id="htmlReportLink" href="#" target="_blank" rel="noopener">Open full HTML report</a>
+        <a class="btn ghost" id="jsonLink" href="#" target="_blank" rel="noopener">analysis.json</a>
+      </div>
+      <p class="note" id="resultNote"></p>
+    </section>
+
+    <section class="panel">
+      <div class="section-head">
+        <h2>Recent reports</h2>
+        <button type="button" class="btn ghost" id="refreshReports">Refresh</button>
+      </div>
+      <div class="report-list" id="reportList"></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Backend: FastAPI · Model: Phase‑2 full hybrid checkpoint under <code>D:\deepfake_phase2</code></p>
+  </footer>
+
+  <script src="/app.js"></script>
+</body>
+</html>
