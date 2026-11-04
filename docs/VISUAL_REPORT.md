@@ -1,6 +1,14 @@
 # Visual results report (detailed)
 
-Open the illustrated HTML (best for teachers / PDF export):
+### Share with friends (images included in one file)
+
+Send this single file — it opens offline anywhere (WhatsApp, email, USB):
+
+**[VISUAL_REPORT_STANDALONE.html](VISUAL_REPORT_STANDALONE.html)**
+
+No `figures` folder needed. All pictures are embedded inside the HTML.
+
+### Local version (needs `figures/` next to it)
 
 **[VISUAL_REPORT.html](VISUAL_REPORT.html)**
 
