@@ -22,18 +22,14 @@
 
   <main>
     <section class="hero">
-      <p class="eyebrow">Hybrid deepfake prototype</p>
       <h1>FrameForge</h1>
-      <p class="lede">
-        Drop a video or photo. The Phase‑2 model scores faces with EfficientNet,
-        frequency cues, and a Bi‑LSTM — then returns a full analysis report.
-      </p>
+      <p class="lede">Upload a video or photo to check if the face looks real or fake.</p>
 
       <form class="drop" id="uploadForm">
         <input type="file" id="fileInput" accept="image/*,video/*" hidden />
         <button type="button" class="drop-zone" id="dropZone">
           <strong>Upload video or image</strong>
-          <span>MP4, MOV, JPG, PNG from your computer</span>
+          <span>MP4, MOV, JPG, PNG</span>
         </button>
         <div class="actions">
           <button type="submit" class="btn primary" id="analyzeBtn" disabled>Analyze</button>
@@ -44,8 +40,7 @@
 
     <section class="panel" id="progressPanel" hidden>
       <div class="spinner" aria-hidden="true"></div>
-      <p>Running face crop, frequency maps, and model inference…</p>
-      <p class="muted">First run can take a minute on this GPU.</p>
+      <p>Analyzing…</p>
     </section>
 
     <section class="panel result" id="resultPanel" hidden>
@@ -85,7 +80,7 @@
   </main>
 
   <footer>
-    <p>Backend: FastAPI · Model: Phase‑2 full hybrid checkpoint under <code>D:\deepfake_phase2</code></p>
+    <p>FrameForge</p>
   </footer>
 
   <script src="/app.js"></script>

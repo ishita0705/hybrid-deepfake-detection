@@ -38,10 +38,7 @@ async function refreshHealth() {
       setHealth(false, "Checkpoint missing — train the model first");
       return;
     }
-    setHealth(
-      true,
-      `Backend ready · ${h.device}${h.model_loaded ? " · model loaded" : ""}`
-    );
+    setHealth(true, h.model_loaded ? "Ready" : "Starting…");
   } catch (err) {
     setHealth(false, "Backend offline");
   }
@@ -108,7 +105,12 @@ function renderResult(data) {
 
   $("htmlReportLink").href = data.urls.report_html;
   $("jsonLink").href = data.urls.analysis_json;
-  $("resultNote").textContent = data.note || "";
+  // Keep the on-screen note short; full research disclaimer stays in the HTML report.
+  const verdict = String(data.verdict || "").toUpperCase();
+  const p = Number(data.mean_score);
+  $("resultNote").textContent = Number.isFinite(p)
+    ? `${verdict}: estimated chance this face is manipulated is ${(p * 100).toFixed(1)}%.`
+    : "";
   resultPanel.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
